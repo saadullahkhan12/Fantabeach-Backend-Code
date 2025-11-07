@@ -22,9 +22,11 @@ if (process.env.NODE_ENV === 'development') {
 // Routes
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
+const otpRoutes = require('./routes/otpRoutes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/otp', otpRoutes);
 
 // Health check
 app.get('/', (req, res) => {
