@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Please add a password'],
       minlength: 6,
-      select: false // omit by default
+      select: false
     },
     phone: {
       type: String,
@@ -33,17 +33,21 @@ const userSchema = new mongoose.Schema(
     credits: {
       type: Number,
       default: 0
+    },
+    // NEW FIELD: mark when user verified via OTP
+    isVerified: {
+      type: Boolean,
+      default: false
     }
   },
   { timestamps: true }
 );
 
-// Ensure password is never sent in responses
+// Hide password in responses
 userSchema.methods.toJSON = function () {
   const userObj = this.toObject();
   delete userObj.password;
   return userObj;
 };
 
-const User = mongoose.model('User', userSchema);
-module.exports = User;
+module.exports = mongoose.model('User', userSchema);
