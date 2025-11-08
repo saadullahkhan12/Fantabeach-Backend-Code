@@ -1,20 +1,15 @@
 const express = require('express');
 const router = express.Router();
 
-// ✅ Import only existing controllers
-const {
-  registerUser,
-  loginUser,
-  googleLogin
-} = require('../controllers/authController');
+const authController = require('../controllers/authController');
 
-// ✅ Register route
-router.post('/register', registerUser);
+// Register user
+router.post('/register', authController.registerUser);
 
-// ✅ Login route
-router.post('/login', loginUser);
+// Login user
+router.post('/login', authController.loginUser);
 
-// ✅ Google login route
-router.post('/google-login', googleLogin);
+// Verify OTP
+router.post('/verify-otp', authController.verifyLoginOrRegisterOtp);
 
 module.exports = router;
