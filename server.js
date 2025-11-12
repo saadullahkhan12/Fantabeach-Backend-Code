@@ -20,6 +20,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 // Routes
+const creditsRoutes = require('./routes/creditsRoutes');
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const otpRoutes = require('./routes/otpRoutes');
@@ -27,6 +28,8 @@ const otpRoutes = require('./routes/otpRoutes');
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/otp', otpRoutes);
+app.use('/api/credits', creditsRoutes);
+
 
 // Health check
 app.get('/', (req, res) => {

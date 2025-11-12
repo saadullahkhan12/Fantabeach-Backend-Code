@@ -13,7 +13,7 @@ const generateToken = (payload) => {
 };
 
 // ============================
-// REGISTER USER
+// REGISTER USE
 // ============================
 exports.registerUser = async (req, res, next) => {
   try {

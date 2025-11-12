@@ -34,7 +34,11 @@ const userSchema = new mongoose.Schema(
       type: Number,
       default: 0
     },
-    // NEW FIELD: mark when user verified via OTP
+    freePlayers: {
+      type: Number,
+      default: 0
+    },
+    // Mark when user verified via OTP
     isVerified: {
       type: Boolean,
       default: false
@@ -50,4 +54,4 @@ userSchema.methods.toJSON = function () {
   return userObj;
 };
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.models.User || mongoose.model('User', userSchema);
