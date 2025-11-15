@@ -4,6 +4,11 @@ const cors = require('cors');
 const morgan = require('morgan');
 const connectDB = require('./config/db');
 
+
+
+
+
+
 // Load env
 dotenv.config();
 
@@ -20,6 +25,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 // Routes
+const leagueRoutes = require("./routes/leagueRoutes");
 const creditsRoutes = require('./routes/creditsRoutes');
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
@@ -29,6 +35,10 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/otp', otpRoutes);
 app.use('/api/credits', creditsRoutes);
+app.use("/api/league", leagueRoutes);
+
+
+
 
 
 // Health check
