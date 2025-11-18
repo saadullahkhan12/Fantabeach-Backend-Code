@@ -1,9 +1,16 @@
 const express = require("express");
 const router = express.Router();
-
-const { createLeague } = require("../controllers/leagueController");
-const protect = require("../middleware/auth"); // <-- match the exported name
+const protect = require("../middleware/auth");
+const {
+  createLeague,
+  getAllLeagues,
+  joinPublicLeague,
+  joinPrivateLeague
+} = require("../controllers/leagueController");
 
 router.post("/create", protect, createLeague);
+router.get("/all-leagues", getAllLeagues);
+router.post("/join-public", protect, joinPublicLeague);
+router.post("/join-private", protect, joinPrivateLeague);
 
 module.exports = router;

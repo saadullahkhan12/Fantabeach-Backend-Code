@@ -4,45 +4,30 @@ const LeagueSchema = new mongoose.Schema(
   {
     leagueName: { type: String, required: true },
     description: { type: String },
-
-    // TEAM INFO
     teamName: { type: String, required: true },
     coachName: { type: String, required: true },
-    credits: { type: Number, required: true, default: 0 },
+    credits: { type: Number, default: 0 },
 
-    // TYPE: public OR private
-    type: {
-      type: String,
-      enum: ["public", "private"],
-      required: true,
-    },
+    type: { type: String, enum: ["public", "private"], required: true },
+    typology: { type: String, default: null }, // only for public
 
-    // PUBLIC ONLY
-    typology: {
-      type: String,
-      enum: ["ordinary", "asta", "abuste", "di-persona"],
-      default: null,
-    },
+    playerAvailability: { type: String, default: null }, // only for private
+    gameMode: { type: String, default: null }, // only for private
 
-    // PRIVATE ONLY
-    playerAvailability: {
-      type: String,
-      enum: ["single", "multiple"],
-      default: null,
-    },
-    gameMode: {
-      type: String,
-      enum: ["classic", "mantra"],
-      default: null,
-    },
-    joinCode: {
-      type: String,
-      default: null,
-      unique: true,
-      sparse: true,
-    },
+    joinCode: { type: String, default: null }, // hashed code for private
 
-    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    members: [
+      {
+        user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        joinedAt: { type: Date, default: Date.now }
+      }
+    ],
+
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true
+    },
   },
   { timestamps: true }
 );

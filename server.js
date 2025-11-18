@@ -24,7 +24,7 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
-// Routes
+// roautes
 const leagueRoutes = require("./routes/leagueRoutes");
 const creditsRoutes = require('./routes/creditsRoutes');
 const authRoutes = require('./routes/authRoutes');
