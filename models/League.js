@@ -9,12 +9,16 @@ const LeagueSchema = new mongoose.Schema(
     credits: { type: Number, default: 0 },
 
     type: { type: String, enum: ["public", "private"], required: true },
-    typology: { type: String, default: null }, // only for public
 
-    playerAvailability: { type: String, default: null }, // only for private
-    gameMode: { type: String, default: null }, // only for private
+    // PUBLIC ONLY
+    typology: { type: String, default: null },
 
-    joinCode: { type: String, default: null }, // hashed code for private
+    // PRIVATE ONLY
+    playerAvailability: { type: String, default: null },
+    gameMode: { type: String, default: null },
+
+    // joinCode = null allowed (removed unique index issue)
+    joinCode: { type: String, default: null, index: false },
 
     members: [
       {
