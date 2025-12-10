@@ -67,6 +67,12 @@ exports.updatePlayerPrice = async (req, res) => {
       });
     }
 
+    // Validate reason if provided
+    const allowedReasons = ['automatic', 'manual', 'performance'];
+    const changeReason = reason && allowedReasons.includes(reason.toLowerCase()) 
+      ? reason.toLowerCase() 
+      : 'manual';
+
     const player = await Player.findById(req.params.playerId);
     if (!player) {
       return res.status(404).json({
@@ -84,8 +90,8 @@ exports.updatePlayerPrice = async (req, res) => {
       player: player._id,
       oldPrice,
       newPrice,
-      changeReason: 'manual',
-      changedBy: req.user._id
+      changeReason: changeReason,
+      changedBy: req.user?._id || req.user?.id || null
     });
 
     res.status(200).json({
@@ -199,14 +205,22 @@ exports.bulkUpdatePrices = async (req, res) => {
     const results = [];
     const errors = [];
 
+    // Validate reason enum values
+    const allowedReasons = ['automatic', 'manual', 'performance'];
+
     for (const update of updates) {
       try {
-        const { playerId, newPrice } = update;
+        const { playerId, newPrice, reason } = update;
 
         if (!playerId || newPrice === undefined) {
           errors.push({ update, error: 'Missing playerId or newPrice' });
           continue;
         }
+
+        // Validate reason if provided, default to 'manual'
+        const changeReason = reason && allowedReasons.includes(reason.toLowerCase())
+          ? reason.toLowerCase()
+          : 'manual';
 
         const player = await Player.findById(playerId);
         if (!player) {
@@ -223,8 +237,8 @@ exports.bulkUpdatePrices = async (req, res) => {
           player: player._id,
           oldPrice,
           newPrice,
-          changeReason: 'manual',
-          changedBy: req.user._id
+          changeReason: changeReason,
+          changedBy: req.user?._id || req.user?.id || null
         });
 
         results.push({
