@@ -197,46 +197,59 @@ exports.uploadPlayersCSV = async (req, res) => {
     const errors = [];
     const buffer = req.file.buffer.toString('utf-8');
     const stream = Readable.from(buffer);
+    const promises = []; // Track all async operations
 
     await new Promise((resolve, reject) => {
       stream
         .pipe(csv())
-        .on('data', async (row) => {
+        .on('data', (row) => {
+          // Wrap async operation in a promise and track it
+          const promise = (async () => {
+            try {
+              const position = parseInt(row.position) || null;
+              const initialPrice = parseFloat(row.initialPrice) || 0;
+              const initialRating = parseFloat(row.initialRating) || 0;
+              // Handle isActive: default to true if not provided, otherwise parse the value
+              let isActive = true; // default
+              if (row.isActive !== undefined && row.isActive !== null && row.isActive !== '') {
+                const isActiveStr = String(row.isActive).toLowerCase().trim();
+                isActive = isActiveStr === 'true' || isActiveStr === '1';
+              }
+
+              if (!row.name || !row.surname || !row.gender || !row.category) {
+                errors.push({ row, error: 'Missing required fields' });
+                return;
+              }
+
+              const player = await Player.create({
+                name: row.name.trim(),
+                surname: row.surname.trim(),
+                gender: row.gender.toLowerCase(),
+                category: row.category.trim(),
+                initialPrice,
+                currentPrice: initialPrice,
+                initialRating,
+                currentRating: initialRating,
+                position,
+                isActive
+              });
+
+              results.push(player);
+            } catch (error) {
+              errors.push({ row, error: error.message });
+            }
+          })();
+          promises.push(promise);
+        })
+        .on('end', async () => {
+          // Wait for all async operations to complete before resolving
           try {
-            const position = parseInt(row.position) || null;
-            const initialPrice = parseFloat(row.initialPrice) || 0;
-            const initialRating = parseFloat(row.initialRating) || 0;
-            // Handle isActive: default to true if not provided, otherwise parse the value
-            let isActive = true; // default
-            if (row.isActive !== undefined && row.isActive !== null && row.isActive !== '') {
-              const isActiveStr = String(row.isActive).toLowerCase().trim();
-              isActive = isActiveStr === 'true' || isActiveStr === '1';
-            }
-
-            if (!row.name || !row.surname || !row.gender || !row.category) {
-              errors.push({ row, error: 'Missing required fields' });
-              return;
-            }
-
-            const player = await Player.create({
-              name: row.name.trim(),
-              surname: row.surname.trim(),
-              gender: row.gender.toLowerCase(),
-              category: row.category.trim(),
-              initialPrice,
-              currentPrice: initialPrice,
-              initialRating,
-              currentRating: initialRating,
-              position,
-              isActive
-            });
-
-            results.push(player);
+            await Promise.all(promises);
+            resolve();
           } catch (error) {
-            errors.push({ row, error: error.message });
+            reject(error);
           }
         })
-        .on('end', () => resolve())
         .on('error', (error) => reject(error));
     });
 

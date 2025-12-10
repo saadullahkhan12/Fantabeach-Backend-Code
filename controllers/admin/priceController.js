@@ -60,10 +60,10 @@ exports.updatePlayerPrice = async (req, res) => {
   try {
     const { newPrice, reason } = req.body;
 
-    if (!newPrice || newPrice < 0) {
+    if (newPrice === undefined || newPrice === null || newPrice < 0) {
       return res.status(400).json({
         success: false,
-        message: 'Please provide a valid new price'
+        message: 'Please provide a valid new price (must be >= 0)'
       });
     }
 

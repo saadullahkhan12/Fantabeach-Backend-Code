@@ -1,16 +1,9 @@
 const protect = require('./auth');
 
 const adminMiddleware = (req, res, next) => {
-  // First check authentication
-  protect(req, res, (err) => {
-    if (err) {
-      return res.status(401).json({
-        success: false,
-        message: 'Not authorized'
-      });
-    }
-
-    // Then check if user is admin
+  // First check authentication using protect middleware
+  protect(req, res, () => {
+    // After authentication, check if user is admin
     if (!req.user || !req.user.isAdmin) {
       return res.status(403).json({
         success: false,
@@ -18,6 +11,7 @@ const adminMiddleware = (req, res, next) => {
       });
     }
 
+    // User is authenticated and is admin, continue
     next();
   });
 };
