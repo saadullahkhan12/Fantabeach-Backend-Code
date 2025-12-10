@@ -22,24 +22,36 @@ const userSchema = new mongoose.Schema(
       minlength: 6,
       select: false
     },
+    name: {
+      type: String,
+      trim: true,
+      default: ''
+    },
     phone: {
       type: String,
+      default: ''
+    },
+    profilePicture: {
+      type: String,
+      default: ''
+    },
+    location: {
+      type: String,
+      trim: true,
       default: ''
     },
     onboardingCompleted: {
       type: Boolean,
       default: false
     },
-    credits: {
-      type: Number,
-      default: 0
-    },
-    freePlayers: {
-      type: Number,
-      default: 0
-    },
+     credits: { type: Number, default: 0 },
+  freePlayers: { type: Number, default: 0 },
     // Mark when user verified via OTP
     isVerified: {
+      type: Boolean,
+      default: false
+    },
+    isAdmin: {
       type: Boolean,
       default: false
     }

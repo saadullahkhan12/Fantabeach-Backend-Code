@@ -6,6 +6,8 @@ const LeagueSchema = new mongoose.Schema(
     description: { type: String },
     teamName: { type: String, required: true },
     coachName: { type: String, required: true },
+    teamImage: { type: String, default: null }, // ⭐ NEW FIELD ⭐
+
     credits: { type: Number, default: 0 },
 
     type: { type: String, enum: ["public", "private"], required: true },
@@ -17,7 +19,6 @@ const LeagueSchema = new mongoose.Schema(
     playerAvailability: { type: String, default: null },
     gameMode: { type: String, default: null },
 
-    // joinCode = null allowed (removed unique index issue)
     joinCode: { type: String, default: null, index: false },
 
     members: [
