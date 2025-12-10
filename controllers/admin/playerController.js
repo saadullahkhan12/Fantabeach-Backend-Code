@@ -206,7 +206,12 @@ exports.uploadPlayersCSV = async (req, res) => {
             const position = parseInt(row.position) || null;
             const initialPrice = parseFloat(row.initialPrice) || 0;
             const initialRating = parseFloat(row.initialRating) || 0;
-            const isActive = row.isActive?.toLowerCase() === 'true' || row.isActive === '1' || true;
+            // Handle isActive: default to true if not provided, otherwise parse the value
+            let isActive = true; // default
+            if (row.isActive !== undefined && row.isActive !== null && row.isActive !== '') {
+              const isActiveStr = String(row.isActive).toLowerCase().trim();
+              isActive = isActiveStr === 'true' || isActiveStr === '1';
+            }
 
             if (!row.name || !row.surname || !row.gender || !row.category) {
               errors.push({ row, error: 'Missing required fields' });
